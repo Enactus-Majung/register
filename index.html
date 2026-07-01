@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보 수집·이용 및 제3자 제공 동의서</title>
+    <style>
+        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 750px; margin: 20px auto; background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        // 인쇄 or PDF 저장 시 영역 설정
+        #pdfArea { padding: 10px; }
+        
+        h1 { text-align: center; font-size: 22px; color: #111; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 15px; color: #fff; background-color: #2d3748; padding: 8px 12px; margin-top: 30px; margin-bottom: 12px; border-radius: 4px; }
+        
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .info-table th, .info-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+        .info-table th { background-color: #f8fafc; width: 28%; font-weight: bold; color: #334155; }
+        .info-table td input[type="text"], .info-table td input[type="tel"], .info-table td select { width: 100%; padding: 7px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
+        .inline-group { display: flex; gap: 15px; align-items: center; }
+        .inline-group label { font-size: 14px; cursor: pointer; }
+
+        .terms-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px; line-height: 1.5; }
+        .terms-table th, .terms-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; }
+        .terms-table th { background-color: #f1f5f9; font-weight: bold; color: #334155; }
+        .terms-table td { text-align: left; }
+        .terms-table td.center { text-align: center; }
+        
+        .notice-box { background-color: #fffaf0; border: 1px solid #feebc8; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 13px; line-height: 1.6; color: #c05621; }
+        .notice-box strong { text-decoration: underline; }
+        
+        .agree-choice { display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 25px; font-weight: bold; font-size: 14px; background: #f8fafc; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .agree-choice label { cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        
+        .bullet-list { padding-left: 20px; font-size: 14px; line-height: 1.7; margin-bottom: 20px; margin-top: 5px; }
+        .bullet-list li { margin-bottom: 6px; }
+
+        .btn-container { display: flex; gap: 15px; margin-top: 35px; }
+        button { flex: 1; padding: 15px; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-submit { background-color: #3182ce; color: white; }
+        .btn-submit:hover { background-color: #2b6cb0; }
+        
+        // PDF 변환 시 버튼 숨기기
+        .no-print { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="agreementForm">
+        <div id="pdfArea">
+            <h1>개인정보 수집·이용 및 제3자 제공 동의서</h1>
+            
+            <h2>■ 신청인 (보호자) 정보</h2>
+            <table class="info-table">
+                <tr>
+                    <th>성 명</th>
+                    <td><input type="text" id="app_name" required placeholder="예: 홍길동"></td>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                    <td><input type="tel" id="app_phone" required placeholder="예: 010-1234-5678"></td>
+                </tr>
+                <tr>
+                    <th>어르신과의 관계</th>
+                    <td>
+                        <div class="inline-group">
+                            <label><input type="radio" name="app_relation" value="성년후견인(법정대리인)" required> 성년후견인(법정대리인)</label>
+                            <label><input type="radio" name="app_relation" value="일반 가족"> 일반 가족</label>
+                            <input type="text" id="app_relation_etc" placeholder="기타 관계 입력(선택)" style="width:130px; padding:4px;">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>[선택] 주 소</th>
+                    <td><input type="text" id="app_address" placeholder="신청인 주소를 입력하세요."></td>
+                </tr>
+            </table>
+
+            <h2>■ 대상자 (차매 어르신) 정보</h2>
+            <table class="info-table">
+                <tr>
+                    <th>성 명</th>
+                    <td><input type="text" id="target_name" required placeholder="예: 김순이"></td>
+                </tr>
+                <tr>
+                    <th>[선택] 주 소</th>
+                    <td><input type="text" id="target_address" placeholder="어르신 주소를 입력하세요."></td>
+                </tr>
+                <tr>
+                    <th>[선택] 응급 정보</th>
+                    <td><input type="text" id="target_emergency" placeholder="예: 기저질환(고혈압), 발견자가 알아야 할 정보"></td>
+                </tr>
+            </table>
+
+            <h2>1. [제1조: 개인정보 수집 및 이용 동의]</h2>
+            <table class="terms-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">수집·이용 항목</th>
+                        <th style="width: 45%;">수집·이용 목적</th>
+                        <th style="width: 25%;">보유·이용기간</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="center"><strong>[필수]</strong><br>보호자 성명 및 연락처,<br>대상자 성명</td>
+                        <td>시범사업 대상자 확인, 안심밴드 배포 및 연락처 연동, 실종 발생 시 보호자 연락</td>
+                        <td class="center">시범사업 종료 후 1년까지</td>
+                    </tr>
+                    <tr>
+                        <td class="center"><strong>[선택]</strong><br>대상자 주소, 응급정보<br>(기저질환 등 발견자가 알아야 할 정보)</td>
+                        <td>응급 상황 발생 시 신속 대응을 위한 정보 제공</td>
+                        <td class="center">시범사업 종료 후 1년까지</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="notice-box">
+                ※ (중요) <strong>수집된 필수 정보는 치매 어르신 실종 시, 시민(발견자)이 스마트폰으로 안심밴드(NFC/QR)를 태깅하면 연결되는 웹페이지에 즉시 노출됩니다. 이를 통해 발견자가 어르신의 성명을 확인하고 보호자에게 바로 전화를 걸 수 있도록 조치하는 데 사용됩니다.</strong><br>
+                * 귀하는 동의를 거부할 권리가 있으나, 필수항목 거부 시 시범사업 참여 및 서비스 이용이 제한됩니다.
+            </div>
+
+            <div class="agree-choice">
+                <span>▶ 필수 항목 수집 및 이용에 동의하십니까?</span>
+                <label><input type="radio" name="agree_essential" value="동의함" required> 동의함</label>
+                <label><input type="radio" name="agree_essential" value="동의하지 않음"> 동의하지 않음</label>
+            </div>
+
+            <div class="agree-choice">
+                <span>▶ 선택 항목 수집 및 이용에 동의하십니까?</span>
+                <label><input type="radio" name="agree_optional" value="동의함" required> 동의함</label>
+                <label><input type="radio" name="agree_optional" value="동의하지 않음"> 동의하지 않음</label>
+            </div>
+
+            <h2>2. [제2조: 개인정보의 제3자 제공 동의]</h2>
+            <ul class="bullet-list">
+                <li><strong>제공받는 자:</strong> 이화여자대학교 학생창업팀 마중</li>
+                <li><strong>제공하는 항목:</strong> 위 1조(개인정보 수집 및 이용 동의)에서 동의하여 수집된 정보 일체</li>
+                <li><strong>제공받는 자의 목적:</strong> 안심밴드 NFC/QR 태깅 시 연결되는 웹페이지 내 대상자·보호자 정보 표시 및 직접 연락 서비스 운영</li>
+                <li><strong>보유 및 이용 기간:</strong> 시범사업 종료 후 1년까지</li>
+            </ul>
+
+            <div class="agree-choice">
+                <span>▶ 개인정보 제3자 제공에 동의하십니까?</span>
+                <label><input type="radio" name="agree_thirdparty" value="동의함" required> 동의함</label>
+                <label><input type="radio" name="agree_thirdparty" value="동의하지 않음"> 동의하지 않음</label>
+            </div>
+        </div>
+        <div class="btn-container no-print">
+            <button type="submit" class="btn-submit">동의서 제출 및 PDF 저장</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyA_r9CcwdibYxAxA8T6NM-6qmiTQm2Lqqo",
+        authDomain: "safeloop-register.firebaseapp.com",
+        projectId: "safeloop-register",
+        storageBucket: "safeloop-register.firebasestorage.app",
+        messagingSenderId: "556729720773",
+        appId: "1:556729720773:web:57977e8faa686486b1f5ac",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 폼 제출
+    document.getElementById('agreementForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 필수 동의 유효성 검사
+        const essential = document.querySelector('input[name="agree_essential"]:checked').value;
+        const thirdparty = document.querySelector('input[name="agree_thirdparty"]:checked').value;
+
+        if (essential === "동의하지 않음" || thirdparty === "동의하지 않음") {
+            alert("필수 항목 및 제3자 제공에 동의하셔야 시범사업 신청이 가능합니다.");
+            return;
+        }
+
+        // 입력 데이터 추출
+        const formData = {
+            applicant: {
+                name: document.getElementById('app_name').value,
+                phone: document.getElementById('app_phone').value,
+                relation: document.querySelector('input[name="app_relation"]:checked').value,
+                relation_etc: document.getElementById('app_relation_etc').value,
+                address: document.getElementById('app_address').value
+            },
+            target: {
+                name: document.getElementById('target_name').value,
+                address: document.getElementById('target_address').value,
+                emergency: document.getElementById('target_emergency').value
+            },
+            agreements: {
+                essential: essential,
+                optional: document.querySelector('input[name="agree_optional"]:checked').value,
+                thirdParty: thirdparty
+            },
+            submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Firebase Firestore 저장
+        db.collection("agreements").add(formData)
+        .then((docRef) => {
+            alert("동의서 데이터가 성공적으로 서버에 저장되었습니다. 이어서 PDF 파일 다운로드를 시작합니다.");
+            
+            // 입력 필드 값들을 인쇄용 텍스트 형태로 임시 고정 -> pdf 파일에 입력값 고정
+            freezeInputsForPDF();
+
+            // PDF 생성 및 저장 실행
+            const element = document.getElementById('pdfArea');
+            const targetName = formData.target.name;
+            const options = {
+                margin:       10,
+                filename:     `개인정보동의서_${targetName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(options).from(element).save().then(() => {
+                // PDF 저장이 끝나면 페이지 새로고침하여 초기화
+                location.reload();
+            });
+        })
+        .catch((error) => {
+            console.error("데이터 저장 실패: ", error);
+            alert("서버 저장 중 오류가 발생했습니다. 네트워크 상태를 확인해 주세요.");
+        });
+    });
+
+    // 인쇄 시 인풋 박스의 글자가 PDF에 출력되도록 텍스트 변환 처리
+    function freezeInputsForPDF() {
+        const inputs = document.querySelectorAll('#pdfArea input[type="text"], #pdfArea input[type="tel"]');
+        inputs.forEach(input => {
+            const span = document.createElement('span');
+            span.innerText = input.value || ' (공란) ';
+            span.style.borderBottom = '1px solid #333';
+            span.style.padding = '2px 5px';
+            input.parentNode.replaceChild(span, input);
+        });
+    }
+</script>
+</body>
+</html>
