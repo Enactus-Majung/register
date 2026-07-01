@@ -7,11 +7,12 @@
     <style>
         body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #f4f6f9; color: #333; margin: 0; padding: 20px; }
         
+        /* A4 비율에 맞추어 화면 및 PDF 출력 안정화 */
         .container { 
-            max-width: 720px; 
+            max-width: 700px; 
             margin: 10px auto; 
             background: #fff; 
-            padding: 25px 35px; 
+            padding: 30px 40px; 
             border-radius: 8px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
         }
@@ -19,14 +20,22 @@
         #pdfArea { padding: 5px; }
         
         h1 { text-align: center; font-size: 21px; color: #111; margin-bottom: 25px; letter-spacing: -0.5px; }
-        h2 { font-size: 14px; color: #fff; background-color: #2d3748; padding: 8px 12px; margin-top: 25px; margin-bottom: 12px; border-radius: 4px; }
-        
-        h2 { page-break-after: avoid !important; }
+        h2 { font-size: 14px; color: #fff; background-color: #2d3748; padding: 8px 12px; margin-top: 25px; margin-bottom: 12px; border-radius: 4px; page-break-after: avoid !important; }
         
         .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .info-table th, .info-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; }
+        .info-table th, .info-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 14px; height: 24px; }
         .info-table th { background-color: #f8fafc; width: 28%; font-weight: bold; color: #334155; }
-        .info-table td input[type="text"], .info-table td input[type="tel"] { width: 100%; padding: 7px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
+        /* 인풋 테두리를 연하게 하고 배경을 투명하게 하여 PDF 변환 시 자연스럽게 출력 */
+        .info-table td input[type="text"], .info-table td input[type="tel"] { 
+            width: 100%; 
+            padding: 6px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+            background-color: transparent;
+        }
         
         .info-table tr, .terms-table tr { page-break-inside: avoid !important; }
         
@@ -122,7 +131,7 @@
                         <td class="center">시범사업 종료 후 1년까지</td>
                     </tr>
                     <tr>
-                        <td class="center"><strong>[선택]</strong><br>대상자 주소, 응급정보<br>(기저질환 등 발견자가 알아야 할 정보)</td>
+                        <td class="center"><strong>[선택]</strong><br>대상자 주소, 응급정보<br>(기저질환 등 발견자가 알아야<br>할 정보)</td>
                         <td>응급 상황 발생 시 신속 대응을 위한 정보 제공</td>
                         <td class="center">시범사업 종료 후 1년까지</td>
                     </tr>
@@ -171,7 +180,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
-    // ⚠️ [본인의 Firebase 설정값으로 변경하세요]
     const firebaseConfig = {
         apiKey: "AIzaSyA_r9CcwdibYxAxA8T6NM-6qmiTQm2Lqqo",
         authDomain: "safeloop-register.firebaseapp.com",
@@ -197,7 +205,6 @@
         }
     }
 
-    // 폼 제출 기능
     document.getElementById('agreementForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -238,23 +245,21 @@
         .then((docRef) => {
             alert("동의서 데이터가 성공적으로 서버에 저장되었습니다. 이어서 PDF 파일 다운로드를 시작합니다.");
             
-            // 입력 필드 고정 함수
-            freezeInputsForPDF();
-
-            // PDF 저장 실행
+            // 고품질 순수 화면 캡처 저장 방식 적용
             const element = document.getElementById('pdfArea');
             const targetName = formData.target.name;
             const options = {
-                margin:       10,
+                margin:       12,
                 filename:     `개인정보동의서_${targetName}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                // html2canvas 설정 변경: 폼 엘리먼트 값을 그대로 렌더링하도록 허용
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
+            // PDF 생성 실행 후 리로드
             html2pdf().set(options).from(element).save().then(() => {
-                // 저장 완료 후 새로고침
-                location.reload();
+                location.reload(); 
             });
         })
         .catch((error) => {
@@ -262,22 +267,6 @@
             alert("서버 저장 중 오류가 발생했습니다.");
         });
     });
-
-    // 인풋 박스의 글자가 PDF에 정상 인쇄되도록 변환하는 헬퍼 함수
-    function freezeInputsForPDF() {
-        
-        // 일반 텍스트/전화번호 인풋 처리
-        const inputs = document.querySelectorAll('#pdfArea input[type="text"], #pdfArea input[type="tel"]');
-        inputs.forEach(input => {
-            // 비활성화된 기타창은 무시
-            if(input.id === 'app_relation_etc' && input.disabled) return;
-            const span = document.createElement('span');
-            span.innerText = input.value || ' (공란) ';
-            span.style.borderBottom = '1px solid #333';
-            span.style.padding = '2px 5px';
-            input.parentNode.replaceChild(span, input);
-        });
-    }
 </script>
 </body>
 </html>
